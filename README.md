@@ -7,7 +7,6 @@ A simple, educational identity provider (IDP) system built with PHP and CodeIgni
 ## ✨ Project Overview
 
 This IDP allows users to:
-
 - Log in with a username and password
 - Receive a signed access token
 - Use that token to access protected API endpoints
@@ -19,7 +18,6 @@ The system simulates real-world token-based authentication (inspired by JWT) and
 ## 🌐 How It Works
 
 ### Login & Token Issuance
-
 1. User logs in via `/auth/login` with valid credentials.
 2. If valid, the server generates a signed token:
    - `token = base64(payload) + '.' + signature`
@@ -27,7 +25,6 @@ The system simulates real-world token-based authentication (inspired by JWT) and
 3. Token is returned to the frontend and stored in `localStorage`.
 
 ### Token Usage
-
 - All protected API requests must include:
   ```http
   Authorization: Bearer <token>
@@ -36,7 +33,6 @@ The system simulates real-world token-based authentication (inspired by JWT) and
 - If valid, access is granted.
 
 ### Token Decoding (client-side)
-
 ```bash
 echo "<base64payload>" | base64 -d
 ```
@@ -47,8 +43,8 @@ echo "<base64payload>" | base64 -d
 
 ```
 app/
-  Controllers/        --> API and Web controllers (login, users)
-  Services/           --> UserManager, storage backends, TokenHelper
+  Controllers/        --> API and Web controllers (login, users, chatbot)
+  Services/           --> UserManager, OpenAiService, TokenHelper, storage backends
   Views/              --> UI for login and user management
   Config/             --> Routing and environment configuration
 public/
@@ -64,13 +60,11 @@ writable/
 ## ⚙️ Getting Started
 
 ### Requirements
-
 - PHP >= 8.2
 - Composer
 - Devcontainers (or Docker with VS Code)
 
 ### Run the project
-
 ```bash
 git clone <repo-url>
 cd idp-app
@@ -86,22 +80,20 @@ Visit: [http://localhost:8080](http://localhost:8080)
 ## 🎓 Classroom Use
 
 ### Overview
-
 This project is broken into **6 parts** for collaborative group work:
 
-| Group | Responsibility                               |
-| ----- | -------------------------------------------- |
-| 1     | User management API (CRUD endpoints)         |
+| Group | Responsibility                           |
+|-------|--------------------------------------------|
+| 1     | User management API (CRUD endpoints)       |
 | 2     | File-based storage (salted password hashing) |
-| 3     | Login/authentication and token generation    |
-| 4     | Token validation logic (HMAC)                |
-| 5     | Frontend logic (login + token handling)      |
-| 6     | System bootstrap (.env, default admin)       |
+| 3     | Login/authentication and token generation  |
+| 4     | Token validation logic (HMAC)              |
+| 5     | Frontend logic (login + token handling)    |
+| 6     | System bootstrap (.env, default admin)     |
 
 Each group implements their part in isolation and merges it into a shared repository. After integration, the full IDP system is available to all teams for use in their own distributed apps.
 
 ### Constraints
-
 - UI is fixed (shared login and user management screen)
 - Each group must work independently and use Git
 - The final integrated system becomes a shared external IDP
@@ -111,7 +103,6 @@ Each group implements their part in isolation and merges it into a shared reposi
 ## ✅ Using the IDP in Other Projects
 
 ### 1. Get a Token
-
 ```bash
 curl -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
@@ -119,13 +110,11 @@ curl -X POST http://localhost:8080/auth/login \
 ```
 
 ### 2. Decode Payload
-
 ```bash
 echo '<base64payload>' | base64 -d
 ```
 
 ### 3. Validate Token (example using openssl)
-
 ```bash
 # Extract base64 and signature parts
 TOKEN="..."
@@ -141,10 +130,25 @@ If signature matches, the token is valid.
 
 ---
 
-## 🌟 Authors
+## 💬 Bonus: AI Chatbot for User Management
 
-- Built and maintained by the DHBW Distributed Systems team.
-- Designed for learning, integration, and experimentation.
+This project includes an optional chatbot interface powered by OpenAI. It allows users to manage the system using natural language commands.
+
+### Features:
+- Chat UI integrated into the user management screen
+- Users can type requests like:
+  - "Create a user named Alice with password 1234 and role admin"
+  - "Update user 2 to be named Bob with role user"
+  - "Delete user 3"
+- OpenAI interprets the intent and triggers the correct backend function
+- On success, the users table automatically refreshes
+
+### How it Works:
+- Messages are sent to OpenAI using function calling
+- If all parameters are provided, OpenAI returns the function name and arguments
+- The system validates and executes the command via `UserManager`
+
+> This feature showcases how AI can be used to enhance system interactions and provides a fun, practical example of integrating external APIs.
 
 
 ---
