@@ -43,7 +43,7 @@ class AuthController extends BaseController
         ]));
 
         // Sign the payload
-        $secret = env('AUTH_SECRET', 'default_secret'); // add to your .env
+        $secret = env('AUTH_SECRET');
         $signature = hash_hmac('sha256', $payload, $secret);
 
         return $this->response->setJSON([

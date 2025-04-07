@@ -62,9 +62,10 @@ writable/
 ### Requirements
 - PHP >= 8.2
 - Composer
-- Devcontainers (or Docker with VS Code)
 
 ### Run the project
+For the LLM integration, an openai api key is required.
+
 ```bash
 git clone <repo-url>
 cd idp-app
@@ -93,6 +94,8 @@ This project is broken into **6 parts** for collaborative group work:
 
 Each group implements their part in isolation and merges it into a shared repository. After integration, the full IDP system is available to all teams for use in their own distributed apps.
 
+TODO: Ensure the interaction / contract between components by using unittests.
+
 ### Constraints
 - UI is fixed (shared login and user management screen)
 - Each group must work independently and use Git
@@ -109,23 +112,65 @@ curl -X POST http://localhost:8080/auth/login \
   -d '{"username": "admin", "password": "admin"}'
 ```
 
+The token will have the following format: `<base64_payload>.<hex_signature>`
+
 ### 2. Decode Payload
+bash:
 ```bash
-echo '<base64payload>' | base64 -d
+TOKEN="PASTE_YOUR_TOKEN_HERE"
+PAYLOAD=$(echo "$TOKEN" | cut -d. -f1)
+
+# Decode the payload (regular base64)
+echo "$PAYLOAD" | base64 -d
 ```
 
-### 3. Validate Token (example using openssl)
-```bash
-# Extract base64 and signature parts
-TOKEN="..."
-PAYLOAD=$(echo $TOKEN | cut -d. -f1)
-SIG=$(echo $TOKEN | cut -d. -f2)
+PHP:
+```php
+$token = 'PASTE_YOUR_TOKEN_HERE';
+$secret = 'your_shared_secret';
 
-# Recreate the signature
-SECRET="your_shared_secret"
-echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$SECRET"
+// Split token into payload and signature
+list($encodedPayload, $encodedSignature) = explode('.', $token, 2);
+
+// Decode the payload
+$payloadJson = base64_decode($encodedPayload);
 ```
 
+### 3. Validate Token
+bash:
+```bash
+SECRET="your_super_secret_key"
+TOKEN="PASTE_YOUR_TOKEN_HERE"
+PAYLOAD=$(echo "$TOKEN" | cut -d. -f1)
+SIGNATURE=$(echo "$TOKEN" | cut -d. -f2)
+
+# Recreate the signature using HMAC-SHA256
+GENERATED_SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$SECRET" | cut -d" " -f2)
+# GENERATED_SIGNATURE must be equal to SIGNATURE, otherwise the token was tampered.
+```
+
+PHP:
+```php
+$token = 'PASTE_YOUR_TOKEN_HERE';
+$secret = 'your_shared_secret';
+
+// Split token into payload and signature
+list($encodedPayload, $encodedSignature) = explode('.', $token, 2);
+
+// Decode the payload
+$payloadJson = base64_decode($encodedPayload);
+
+// Recreate signature
+$expectedSignature = hash_hmac('sha256', $encodedPayload, $secret);
+$expectedSignatureEncoded = base64_encode($expectedSignature);
+
+// Validate
+if ($expectedSignatureEncoded === $encodedSignature) {
+    echo "Valid signature ✅\n";
+} else {
+    echo "Invalid signature ❌\n";
+}
+```
 If signature matches, the token is valid.
 
 ---
@@ -145,11 +190,10 @@ This project includes an optional chatbot interface powered by OpenAI. It allows
 
 ### How it Works:
 - Messages are sent to OpenAI using function calling
-- If all parameters are provided, OpenAI returns the function name and arguments
-- The system validates and executes the command via `UserManager`
+- If all parameters are provided, OpenAI returns the function name and arguments. If not, there is a follow up with the user
+- The system validates and executes the command via `UserManager` class
 
 > This feature showcases how AI can be used to enhance system interactions and provides a fun, practical example of integrating external APIs.
-
 
 ---
 
