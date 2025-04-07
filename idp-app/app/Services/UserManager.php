@@ -2,13 +2,17 @@
 
 namespace App\Services;
 
+use RuntimeException;
+
 class UserManager
 {
     private UserStorageInterface $storage;
 
-    public function __construct(UserStorageInterface $storage)
+    public function __construct()
     {
-        $this->storage = $storage;
+
+        $useFile = env('FILE_STORAGE');
+        $this->storage = $useFile ? new FileUserStorage() : throw new \RuntimeException("Only FILE_STORAGE=true is supported right now");
     }
 
     public function create(array $data): array

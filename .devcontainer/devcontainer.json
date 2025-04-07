@@ -18,7 +18,7 @@
   		"source=${localWorkspaceFolder}/.devcontainer/xdebug.ini,target=/usr/local/etc/php/conf.d/xdebug.ini,type=bind,consistency=cached"
 	],
 
-	"postCreateCommand": "sudo bash .devcontainer/setup.sh"
+	"postCreateCommand": "sudo -E bash .devcontainer/setup.sh"
 
 
 	// Use 'postCreateCommand' to run commands after the container is created.

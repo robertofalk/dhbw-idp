@@ -13,3 +13,5 @@ $routes->get('users', 'UserController::index');
 $routes->post('users', 'UserController::create');
 $routes->put('users/(:num)', 'UserController::update/$1');
 $routes->delete('users/(:num)', 'UserController::delete/$1');
+
+$routes->post('chat', 'ChatController::message');

@@ -97,6 +97,50 @@
             fetchUsers();
         }
 
+        function toggleChat() {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function handleChat(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+
+            const userText = input.value.trim();
+            if (userText === '') return;
+
+            // Show user message
+            const userMsg = document.createElement('div');
+            userMsg.textContent = "You: " + userText;
+            messages.appendChild(userMsg);
+
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            const token = localStorage.getItem('token');
+            const res = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ message: userText })
+            });
+
+            const data = await res.json();
+
+            // Show bot reply
+            const botMsg = document.createElement('div');
+            botMsg.textContent = "Bot: " + data.reply;
+            messages.appendChild(botMsg);
+
+            messages.scrollTop = messages.scrollHeight;
+            if (data.action === 'refresh') {
+                fetchUsers();
+            }
+        }
+
         window.onload = () => {
             document.getElementById('user-form').addEventListener('submit', handleSubmit);
             document.getElementById('reset-button').addEventListener('click', () => {
@@ -141,5 +185,20 @@
             </table>
         </div>
     </div>
+    <!-- Chat button -->
+    <div id="chat-toggle" onclick="toggleChat()" title="Chat">
+        💬
+    </div>
+
+    <!-- Chat box -->
+    <div id="chat-box">
+        <div id="chat-header">ChatBot <span onclick="toggleChat()" style="cursor:pointer; float:right;">&times;</span></div>
+        <div id="chat-messages"></div>
+        <form id="chat-form" onsubmit="handleChat(event)">
+            <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off" />
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
 </body>
 </html>

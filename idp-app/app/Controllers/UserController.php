@@ -12,11 +12,7 @@ class UserController extends BaseController
 
     public function __construct()
     {
-
-        $useFile = env('FILE_STORAGE');
-        $storage = $useFile ? new FileUserStorage() : throw new \RuntimeException("Only FILE_STORAGE=true is supported right now");
-
-        $this->userManager = new UserManager($storage);
+        $this->userManager = new UserManager();
     }
 
     private function validateToken(): ?bool

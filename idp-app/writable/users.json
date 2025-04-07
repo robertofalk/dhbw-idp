@@ -12,5 +12,12 @@
         "password": "38d23da7b3c1e95b753231f59dec8d7c166e0397bf7395a5a1b121e2aadfbce8",
         "id": 2,
         "salt": "73152e2ee339194c22a7eb87573e3a90"
+    },
+    {
+        "name": "Jane",
+        "role": "admin",
+        "password": "123",
+        "id": 3,
+        "salt": "c9ea6d8677654be9cecff8d57cb239e2"
     }
 ]

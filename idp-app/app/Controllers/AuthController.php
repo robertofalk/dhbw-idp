@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Services\UserManager;
-use App\Services\FileUserStorage;
 
 class AuthController extends BaseController
 {
@@ -15,8 +14,7 @@ class AuthController extends BaseController
             return $this->response->setStatusCode(400)->setJSON(['error' => 'Username and password required']);
         }
 
-        $storage = new FileUserStorage(); // you can make this dynamic later
-        $manager = new UserManager($storage);
+        $manager = new UserManager();
         $users = $manager->getAll();
 
         $matched = null;
