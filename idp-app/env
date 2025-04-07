@@ -68,4 +68,8 @@
 
 # logger.threshold = 4
 
-USER_IN_MEMORY=true
+FILE_STORAGE = true
+CI_ENVIRONMENT = development
+AUTH_SECRET = your_super_secret_key
+
+OPENAI_API_KEY = xxx

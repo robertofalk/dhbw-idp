@@ -106,7 +106,7 @@ Each group implements their part in isolation and merges it into a shared reposi
 ```bash
 curl -X POST http://localhost:8080/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "admin123"}'
+  -d '{"username": "admin", "password": "admin"}'
 ```
 
 ### 2. Decode Payload

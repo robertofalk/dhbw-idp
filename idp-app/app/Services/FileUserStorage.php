@@ -15,7 +15,7 @@ class FileUserStorage implements UserStorageInterface
 
         if (empty($this->users)) {
             $salt = bin2hex(random_bytes(16));
-            $password = 'admin123';
+            $password = 'admin';
             $passwordHash = hash_hmac('sha256', $password, $salt);
         
             $this->users[] = [
