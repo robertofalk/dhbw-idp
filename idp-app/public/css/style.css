@@ -1,0 +1,109 @@
+/* Base colors */
+:root {
+    --gray-bg: #adb2b4;
+    --header-bg: #ffffff;
+    --text-color: #333;
+    --card-bg: #fff;
+    --accent-color: #c8102e; /* optional DHBW red */
+    --border-radius: 8px;
+}
+
+/* Reset & global styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--gray-bg);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header */
+header {
+    background-color: var(--header-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    min-height: 110px;
+}
+
+/* logo */
+.header-left svg {
+    height: 55px;
+    width: auto;
+    margin-left: 13rem;
+}
+
+/* center title */
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* logout button */
+.header-right {
+    margin-left: auto;
+    margin-right: 1rem;
+}
+
+button.logout {
+    background-color: var(--accent-color);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+
+/* Centered container */
+.centered-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card box (login/user UI) */
+.card {
+    background-color: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Form elements */
+form label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+
+button {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--accent-color);
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #a10e26;
+}
