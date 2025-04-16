@@ -55,17 +55,24 @@ class OpenAiService
                 ]
             ]
         ];
-        
 
-        $response = $this->client->chat()->create([
-            'model' => 'gpt-4o-mini',
-            'messages' => [
-                ['role' => 'user', 'content' => $message]
-            ],
-            'functions' => $functions,
-            'function_call' => 'auto'
-        ]);
+        try {
+            $response = $this->client->chat()->create([
+                'model' => 'gpt-4.1-nano',
+                'messages' => [
+                    ['role' => 'user', 'content' => $message]
+                ],
+                'functions' => $functions,
+                'function_call' => 'auto'
+            ]);
 
-        return $response->toArray();
+            return $response->toArray();
+        } catch (\Exception $e) {
+            // Log the error or handle it as needed
+            return [
+                'error' => true,
+                'message' => $e->getMessage()
+            ];
+        }
     }
 }
