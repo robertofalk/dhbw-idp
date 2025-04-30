@@ -8,9 +8,9 @@ class FileUserStorage implements UserStorageInterface
     private array $users = [];
     private int $nextId = 1;
 
-    public function __construct()
+    public function __construct(?string $filePath = null)
     {
-        $this->filePath = WRITEPATH . 'users.json';
+        $this->filePath = $filePath ?? WRITEPATH . 'users.json';
         $this->load();
 
         if (empty($this->users)) {
@@ -28,7 +28,6 @@ class FileUserStorage implements UserStorageInterface
         
             $this->saveToFile();
         }
-        
     }
 
     private function load(): void

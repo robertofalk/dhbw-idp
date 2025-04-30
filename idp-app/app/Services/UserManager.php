@@ -8,11 +8,14 @@ class UserManager
 {
     private UserStorageInterface $storage;
 
-    public function __construct()
+    public function __construct(?UserStorageInterface $storage = null)
     {
-
-        $useFile = env('FILE_STORAGE');
-        $this->storage = $useFile ? new FileUserStorage() : throw new \RuntimeException("Only FILE_STORAGE=true is supported right now");
+        if ($storage === null) {
+            $useFile = env('FILE_STORAGE');
+            $this->storage = $useFile ? new FileUserStorage() : throw new \RuntimeException("Only FILE_STORAGE=true is supported right now");
+        } else {
+            $this->storage = $storage;
+        }
     }
 
     public function create(array $data): array

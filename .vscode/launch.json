@@ -9,6 +9,19 @@
         "pathMappings": {
           "/workspaces/dhbw-idp/idp-app": "${workspaceFolder}/idp-app"
         }
+      },
+      {
+        "name": "Debug PHPUnit Tests",
+        "type": "php",
+        "request": "launch",
+        "program": "${workspaceFolder}/idp-app/vendor/bin/phpunit",
+        "args": [
+          "--configuration",
+          "${workspaceFolder}/idp-app/phpunit.xml.dist",
+          "${workspaceFolder}/idp-app/tests/unit/"
+        ],
+        "cwd": "${workspaceFolder}/idp-app",
+        "port": 9003
       }
     ]
   }

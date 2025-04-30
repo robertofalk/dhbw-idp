@@ -9,6 +9,15 @@ use App\Services\UserManager;
 
 class ChatController extends BaseController
 {
+    protected OpenAiService $openAiService;
+    protected UserManager $userManager;
+
+    public function __construct()
+    {
+        $this->openAiService = new OpenAiService();
+        $this->userManager = new UserManager();
+    }
+
     private function validateToken(): ?bool
     {
         $authHeader = $this->request->getHeaderLine('Authorization');
@@ -31,8 +40,7 @@ class ChatController extends BaseController
                 ->setJSON(['error' => 'Missing message']);
         }
 
-        $openai = new OpenAiService();
-        $response = $openai->ask($data['message']);
+        $response = $this->openAiService->ask($data['message']);
 
         $choice = $response['choices'][0]['message'];
 
@@ -41,22 +49,20 @@ class ChatController extends BaseController
             $funcName = $func['name'];
             $args = json_decode($func['arguments'], true);
 
-            $manager = new UserManager();
-
             try {
                 switch ($funcName) {
                     case 'createUser':
-                        $user = $manager->create($args);
+                        $user = $this->userManager->create($args);
                         $message = "✅ User '{$user['name']}' created successfully!";
                         break;
             
                     case 'updateUser':
-                        $user = $manager->update($args['id'], $args);
+                        $user = $this->userManager->update($args['id'], $args);
                         $message = "✅ User #{$user['id']} updated!";
                         break;
             
                     case 'deleteUser':
-                        $manager->delete($args['id']);
+                        $this->userManager->delete($args['id']);
                         $message = "🗑️ User #{$args['id']} deleted.";
                         break;
             

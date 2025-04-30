@@ -1,1 +1,79 @@
-[]
+[
+    {
+        "name": "testuser",
+        "role": "user",
+        "password": "0bd3164cd04cbd044678fb4341a2f0eb4dc3c667c0c316b784074c125c5bf2f0",
+        "id": 3,
+        "salt": "4abfa0aeec3c822b3809a677a051327f"
+    },
+    {
+        "name": "updateduser",
+        "role": "editor",
+        "password": "8077d5c84af70795307c15a0fc02b00099aac839b2abadc629ee6ef0be9c421a",
+        "id": 4,
+        "salt": "5f6996c301eb66a15996ee6a19ee2dfb"
+    },
+    {
+        "name": "newuser",
+        "role": "user",
+        "password": "fda50391530b3e604e1db581e39b065797bd61cd41128ff9b79bf3f8f8f01425",
+        "id": 5,
+        "salt": "ad27c1710ccc0b9ed559320756904088"
+    },
+    {
+        "name": "newuser",
+        "role": "user",
+        "password": "0b13ee76097eb64a007d653ab9ba33a00f5300ab17b76806eaf26ef5cb86fd8b",
+        "id": 6,
+        "salt": "c6795ff0115501aa46e9ba6c3ca375db"
+    },
+    {
+        "name": "newuser",
+        "role": "user",
+        "password": "f0516d7ab61142345189b99d8f3dbcbeec59a310b82289097077ed08fb8d8c43",
+        "id": 7,
+        "salt": "87b9c1c0c7a8da4fb4ec2393020cd64c"
+    },
+    {
+        "name": "newuser",
+        "role": "user",
+        "password": "9691887d331df18b320ba342d91002c2ea9f4cbdbc1e0785b18e8356ee669b73",
+        "id": 8,
+        "salt": "6769cdf38fddd96300c83072d20b0c62"
+    },
+    {
+        "name": "John Doe",
+        "role": "user",
+        "password": "baf75df01a4736069b31f04b0535fc4f9c61860e7b038463b7ad5fb7b78d2f46",
+        "id": 9,
+        "salt": "e95cd809530e3a7f8dec0641975f2cd3"
+    },
+    {
+        "name": "John Doe",
+        "role": "user",
+        "password": "4cb412a40e385a8f499571e16e6f69777017a5dd1103da75e981876ba8ee8aac",
+        "id": 10,
+        "salt": "138f1500f4ff4bf82bea3a1c0a3874f1"
+    },
+    {
+        "username": "newuser",
+        "email": "new@example.com",
+        "password": "0694afee602f3b5b85c633670e36612a0e63fadb43d79f1d08d5934e8ed6105c",
+        "id": 11,
+        "salt": "85f33a1a598b6b33ca7d8581281c7525"
+    },
+    {
+        "name": "John Doe",
+        "role": "user",
+        "password": "fd3c8464300607909e952bdffe12e113f5fbd282363f562923f6d2769dc57aab",
+        "id": 12,
+        "salt": "2a87189461343c47f3f2abac950c1ffd"
+    },
+    {
+        "username": "newuser",
+        "email": "new@example.com",
+        "password": "9cbd6ed861a0de0db3fefa921d76251b0e9f2a2875bb3d3c3080129be7b369bb",
+        "id": 13,
+        "salt": "d7480d5a3738a0bcd161b09215a5d69e"
+    }
+]

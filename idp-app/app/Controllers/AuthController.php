@@ -6,6 +6,13 @@ use App\Services\UserManager;
 
 class AuthController extends BaseController
 {
+    protected UserManager $userManager;
+
+    public function __construct(?UserManager $userManager = null)
+    {
+        $this->userManager = $userManager ?? new UserManager();
+    }
+
     public function login()
     {
         $data = $this->request->getJSON(true);
@@ -14,8 +21,7 @@ class AuthController extends BaseController
             return $this->response->setStatusCode(400)->setJSON(['error' => 'Username and password required']);
         }
 
-        $manager = new UserManager();
-        $users = $manager->getAll();
+        $users = $this->userManager->getAll();
 
         $matched = null;
         foreach ($users as $user) {
