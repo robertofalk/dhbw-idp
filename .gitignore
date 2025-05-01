@@ -2,4 +2,4 @@
 /writable/cache/*
 /writable/logs/*
 .env
-
+idp-app/writable/users.json
