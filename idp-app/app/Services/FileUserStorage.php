@@ -2,6 +2,10 @@
 
 namespace App\Services;
 
+use RuntimeException;
+
+use function PHPUnit\Framework\throwException;
+
 class FileUserStorage implements UserStorageInterface
 {
     private string $filePath;
@@ -12,29 +16,16 @@ class FileUserStorage implements UserStorageInterface
     {
         $this->filePath = WRITEPATH . 'users.json';
         $this->load();
-
-        if (empty($this->users)) {
-            $salt = bin2hex(random_bytes(16));
-            $password = 'admin';
-            $passwordHash = hash_hmac('sha256', $password, $salt);
-        
-            $this->users[] = [
-                'id' => $this->nextId++,
-                'name' => 'admin',
-                'role' => 'admin',
-                'salt' => $salt,
-                'password' => $passwordHash
-            ];
-        
-            $this->saveToFile();
-        }
-        
     }
 
     private function load(): void
     {
         if (file_exists($this->filePath)) {
-            $this->users = json_decode(file_get_contents($this->filePath), true) ?? [];
+            $usersData = json_decode(file_get_contents($this->filePath), true) ?? [];
+            // Convert to username-keyed array
+            foreach ($usersData as $user) {
+                $this->users[$user['username']] = $user;
+            }
             $ids = array_column($this->users, 'id');
             $this->nextId = $ids ? max($ids) + 1 : 1;
         }
@@ -42,52 +33,72 @@ class FileUserStorage implements UserStorageInterface
 
     private function saveToFile(): void
     {
-        file_put_contents($this->filePath, json_encode($this->users, JSON_PRETTY_PRINT));
+        // Convert back to sequential array for storage
+        $usersToSave = array_values($this->users);
+        file_put_contents($this->filePath, json_encode($usersToSave, JSON_PRETTY_PRINT));
+    }
+
+    public function get(array $data): array
+    {
+        if (!isset($this->users[$data['username']])) {
+            throw new \RuntimeException("Username {$data['username']} not found");
+        }
+
+        $user = $this->users[$data['username']];
+        
+        $attemptHash = hash_hmac('sha256', $data['password'], $user['salt']);
+        if ($attemptHash === $user['password']) {
+            return $user;
+        }
+        throw new \RuntimeException("Username or password not match");
     }
 
     public function getAll(): array
     {
-        return $this->users;
+        return array_values($this->users);
     }
 
     public function save(array $user): array
-    {
-        // Create salt and hash the password
-        $salt = bin2hex(random_bytes(16));
-        $passwordHash = hash_hmac('sha256', $user['password'], $salt);
-    
+    {    
+        if (isset($this->users[$user['username']])) {
+            throw new \RuntimeException("Username {$user['username']} already exists");
+        }
+
         $user['id'] = $this->nextId++;
-        $user['salt'] = $salt;
-        $user['password'] = $passwordHash;
-    
-        $this->users[] = $user;
+        $this->users[$user['username']] = $user;
         $this->saveToFile();
         return $user;
     }
     
-
-    public function update(int $id, array $data): ?array
+    public function update(array $data): void
     {
-        foreach ($this->users as &$user) {
-            if ($user['id'] === $id) {
-                $user = array_merge($user, $data);
-                $this->saveToFile();
-                return $user;
-            }
+        if (!isset($data['username'])) {
+            throw new \InvalidArgumentException("Username is required for update");
         }
-        return null;
+
+        if (!isset($this->users[$data['username']])) {
+            throw new \InvalidArgumentException("User with username {$data['username']} does not exist.");
+        }
+        
+        $this->users[$data['username']] = array_merge($this->users[$data['username']], $data);
+        $this->saveToFile();
     }
 
-    public function delete(int $id): bool
+    public function delete(int $id): void
     {
-        foreach ($this->users as $i => $user) {
+        $userToDelete = null;
+        foreach ($this->users as $username => $user) {
             if ($user['id'] === $id) {
-                unset($this->users[$i]);
-                $this->users = array_values($this->users); // reindex
-                $this->saveToFile();
-                return true;
+                $userToDelete = $username;
+                break;
             }
         }
-        return false;
+
+        if ($userToDelete === null) {
+            throw new \InvalidArgumentException("User with ID {$id} does not exist.");
+        }
+        
+        unset($this->users[$userToDelete]);
+        $this->saveToFile();
     }
 }

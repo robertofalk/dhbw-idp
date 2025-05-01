@@ -8,6 +8,15 @@
         "port": 9003,
         "pathMappings": {
           "/workspaces/dhbw-idp/idp-app": "${workspaceFolder}/idp-app"
+        },
+        "ignore": [
+          "**/vendor/**/*.php"
+        ],
+        "xdebugSettings": {
+          "max_children": 128,
+          "max_data": 512,
+          "max_depth": 3,
+          "show_hidden": 1
         }
       }
     ]

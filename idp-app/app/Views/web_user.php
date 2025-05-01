@@ -38,10 +38,10 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${user.id}</td>
-                    <td>${user.name}</td>
+                    <td>${user.username}</td>
                     <td>${user.role}</td>
                     <td>
-                        <button onclick="editUser(${user.id}, '${user.name}', '${user.role}')">Edit</button>
+                        <button onclick="editUser(${user.id}, '${user.username}', '${user.role}')">Edit</button>
                         <button onclick="deleteUser(${user.id})">Delete</button>
                     </td>
                 `;
@@ -49,9 +49,9 @@
             });
         }
 
-        function editUser(id, name, role) {
+        function editUser(id, username, role) {
             editingUserId = id;
-            document.getElementById('name').value = name;
+            document.getElementById('username').value = username;
             document.getElementById('role').value = role;
             document.getElementById('password').value = '';
             document.getElementById('submit-button').textContent = 'Update User';
@@ -72,11 +72,11 @@
         async function handleSubmit(event) {
             event.preventDefault();
 
-            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
             const role = document.getElementById('role').value;
             const password = document.getElementById('password').value;
 
-            const payload = { name, role };
+            const payload = { username, role };
             if (password) payload.password = password;
 
             const method = editingUserId ? 'PUT' : 'POST';
@@ -160,8 +160,8 @@
         <div class="card">
             <h2>User Management</h2>
             <form id="user-form">
-                <label>Name:
-                    <input type="text" id="name" required>
+                <label>Username:
+                    <input type="text" id="username" required>
                 </label>
                 <label>Role:
                     <select id="role">
@@ -179,7 +179,7 @@
             <h3 style="margin-top: 2rem;">Users</h3>
             <table border="1" width="100%">
                 <thead>
-                    <tr><th>ID</th><th>Name</th><th>Role</th><th>Actions</th></tr>
+                    <tr><th>ID</th><th>Username</th><th>Role</th><th>Actions</th></tr>
                 </thead>
                 <tbody id="user-list"></tbody>
             </table>

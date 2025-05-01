@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Services\UserManager;
-use App\Services\FileUserStorage;
 use App\Helpers\TokenHelper;
 
 class UserController extends BaseController
@@ -39,7 +38,7 @@ class UserController extends BaseController
 
         $data = $this->request->getJSON(true);
         $user = $this->userManager->create($data);
-        return $this->response->setJSON($user);
+        return $this->response->setStatusCode(201)->setJSON($user);
     }
 
     public function update($id)
@@ -48,9 +47,13 @@ class UserController extends BaseController
             return $this->response->setStatusCode(401)->setJSON(['error' => 'Unauthorized']);
 
         $data = $this->request->getJSON(true);
-        $user = $this->userManager->update((int)$id, $data);
-        if (!$user) return $this->response->setStatusCode(404)->setJSON(['error' => 'User not found']);
-        return $this->response->setJSON($user);
+
+        try {
+            $this->userManager->update($data);
+        } catch (\InvalidArgumentException $e) {
+            return $this->response->setStatusCode(400)->setJSON(['error' => 'Invalid data']);
+        }
+        return $this->response->setJSON($data);
     }
 
     public function delete($id)
@@ -58,8 +61,11 @@ class UserController extends BaseController
         if (!$this->validateToken())
             return $this->response->setStatusCode(401)->setJSON(['error' => 'Unauthorized']);
         
-        $success = $this->userManager->delete((int)$id);
-        if (!$success) return $this->response->setStatusCode(404)->setJSON(['error' => 'User not found']);
-        return $this->response->setJSON(['status' => 'deleted']);
+        try {
+            $this->userManager->delete((int)$id);
+            return $this->response->setJSON(['status' => 'deleted']);
+        } catch (\InvalidArgumentException $e) {
+            return $this->response->setStatusCode(404)->setJSON(['error' => 'User not found']);
+        }
     }
 }

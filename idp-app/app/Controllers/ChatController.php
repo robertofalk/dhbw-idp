@@ -47,7 +47,7 @@ class ChatController extends BaseController
                 switch ($funcName) {
                     case 'createUser':
                         $user = $manager->create($args);
-                        $message = "✅ User '{$user['name']}' created successfully!";
+                        $message = "✅ User '{$user['username']}' created successfully!";
                         break;
             
                     case 'updateUser':

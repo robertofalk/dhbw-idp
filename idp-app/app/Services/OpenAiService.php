@@ -22,11 +22,11 @@ class OpenAiService
                 'parameters' => [
                     'type' => 'object',
                     'properties' => [
-                        'name' => ['type' => 'string'],
+                        'username' => ['type' => 'string'],
                         'role' => ['type' => 'string', 'enum' => ['admin', 'user']],
                         'password' => ['type' => 'string'],
                     ],
-                    'required' => ['name', 'role', 'password']
+                    'required' => ['username', 'role', 'password']
                 ]
             ],
             [
@@ -36,7 +36,7 @@ class OpenAiService
                     'type' => 'object',
                     'properties' => [
                         'id' => ['type' => 'integer'],
-                        'name' => ['type' => 'string'],
+                        'username' => ['type' => 'string'],
                         'role' => ['type' => 'string', 'enum' => ['admin', 'user']],
                         'password' => ['type' => 'string']
                     ],
@@ -45,7 +45,7 @@ class OpenAiService
             ],
             [
                 'name' => 'deleteUser',
-                'description' => 'Deletes a user by ID',
+                'description' => 'Deletes a user by ID. Reject if the ID was not provided.',
                 'parameters' => [
                     'type' => 'object',
                     'properties' => [
