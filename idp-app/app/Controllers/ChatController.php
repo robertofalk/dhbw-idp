@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Helpers\TokenHelper;
 use App\Services\OpenAiService;
 use App\Services\UserManager;
+use App\Models\User;
 
 class ChatController extends BaseController
 {
@@ -46,13 +47,14 @@ class ChatController extends BaseController
             try {
                 switch ($funcName) {
                     case 'createUser':
-                        $user = $manager->create($args);
-                        $message = "✅ User '{$user['username']}' created successfully!";
+
+                        $user = $manager->create($args['username'], $args['password'], $args['role']);
+                        $message = "✅ User '{$user->getUsername()}' created successfully!";
                         break;
             
                     case 'updateUser':
-                        $user = $manager->update($args['id'], $args);
-                        $message = "✅ User #{$user['id']} updated!";
+                        $user = $manager->update(id: $args['id'], username: $args['username'] ?? null, password: $args['password'] ?? null, role: $args['role'] ?? null);
+                        $message = "✅ User #{$args['id']} updated!";
                         break;
             
                     case 'deleteUser':

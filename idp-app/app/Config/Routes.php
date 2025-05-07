@@ -8,9 +8,8 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'AuthController::index');
 $routes->post('auth/login', 'AuthController::login');
 
-$routes->get('users-web', 'UserWebController::index');
-
-$routes->get('users', 'UserController::index');
+$routes->get('list-users', 'UserController::index');
+$routes->get('users', 'UserController::getAll');
 $routes->post('users', 'UserController::create');
 $routes->put('users/(:num)', 'UserController::update/$1');
 $routes->delete('users/(:num)', 'UserController::delete/$1');

@@ -92,6 +92,10 @@ This project is broken into **6 parts** for collaborative group work:
 | 5     | Frontend logic (login + token handling)    |
 | 6     | System bootstrap (.env, default admin)     |
 
+
+
+
+
 Each group implements their part in isolation and merges it into a shared repository. After integration, the full IDP system is available to all teams for use in their own distributed apps.
 
 TODO: Ensure the interaction / contract between components by using unittests.

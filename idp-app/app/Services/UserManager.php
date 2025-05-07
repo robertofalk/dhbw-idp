@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use RuntimeException;
+
 
 class UserManager
 {
@@ -16,36 +18,29 @@ class UserManager
 
         $users = $this->storage->getAll();
         if (empty($users)) {
-            $this->create([
-                'username' => 'admin',
-                'password' => 'admin',
-                'role' => 'admin'
-            ]);
+            $this->create('admin', 'admin', 'admin');
         }
     }
 
-    private function newSalt(): string
-    {
-        return bin2hex(random_bytes(16));
-    }
-
-    public function create(array $data): array
+    public function create(string $username, string $password, string $role): User
     {
         // Create salt and hash the password
-        $salt = $this->newSalt();
-        $passwordHash = hash_hmac('sha256', $data['password'], $salt);
-        
-        $user['username'] = $data['username'];
-        $user['role'] = $data['role'];
-        $user['salt'] = $salt;
-        $user['password'] = $passwordHash;
+        $salt = bin2hex(random_bytes(16));
+        $passwordHash = hash_hmac('sha256', $password, $salt);
 
+        $user = new User(
+            username: $username,
+            password: $passwordHash,
+            salt: $salt,
+            role: $role
+        );
+        
         return $this->storage->save($user);
     }
 
-    public function get(array $data): array
+    public function get(string $username, string $password): User
     {
-        return $this->storage->get($data);
+        return $this->storage->get(username: $username, password: $password);
     }
 
     public function getAll(): array
@@ -53,9 +48,24 @@ class UserManager
         return $this->storage->getAll();
     }
 
-    public function update(array $data): void
+    public function update(int $id, ?string $username = null, ?string $password = null, ?string $role = null): void
     {
-        $this->storage->update($data);
+        $user = $this->storage->get(id: $id);
+
+        if ($username !== null) {
+            $user->setUsername($username);
+        }
+        if ($password !== null) {
+            $salt = bin2hex(random_bytes(16));
+            $passwordHash = hash_hmac('sha256', $password, $salt);
+            $user->setPassword($passwordHash);
+            $user->setSalt($salt);
+        }
+        if ($role !== null) {
+            $user->setRole($role);
+        }
+
+        $this->storage->update($id, $user);
     }
 
     public function delete(int $id): void

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Services\UserManager;
 use App\Helpers\TokenHelper;
+use App\Models\User;
 
 class UserController extends BaseController
 {
@@ -14,7 +15,7 @@ class UserController extends BaseController
         $this->userManager = new UserManager();
     }
 
-    private function validateToken(): ?bool
+    private function validateToken(): bool
     {
         $authHeader = $this->request->getHeaderLine('Authorization');
         $user = TokenHelper::validateToken($authHeader);
@@ -26,9 +27,19 @@ class UserController extends BaseController
 
     public function index()
     {
-        if (!$this->validateToken())
+        return view('users');
+    }
+
+    public function getAll()
+    {
+        if (!$this->validateToken()) {
             return $this->response->setStatusCode(401)->setJSON(['error' => 'Unauthorized']);
-        return $this->response->setJSON($this->userManager->getAll());
+        }
+
+        $users = $this->userManager->getAll();
+        $serializedUsers = array_map(fn($user) => json_decode($user->serialize(), true), $users);
+
+        return $this->response->setJSON($serializedUsers);
     }
 
     public function create()
@@ -37,11 +48,14 @@ class UserController extends BaseController
             return $this->response->setStatusCode(401)->setJSON(['error' => 'Unauthorized']);
 
         $data = $this->request->getJSON(true);
-        $user = $this->userManager->create($data);
+        if (!$data || !isset($data['username'], $data['password'], $data['role']))
+            return $this->response->setStatusCode(400)->setJSON(['error' => 'Username, password and role required']);
+
+        $user = $this->userManager->create($data['username'], $data['password'], $data['role']);
         return $this->response->setStatusCode(201)->setJSON($user);
     }
 
-    public function update($id)
+    public function update(int $id)
     {
         if (!$this->validateToken())
             return $this->response->setStatusCode(401)->setJSON(['error' => 'Unauthorized']);
@@ -49,7 +63,7 @@ class UserController extends BaseController
         $data = $this->request->getJSON(true);
 
         try {
-            $this->userManager->update($data);
+            $this->userManager->update(id: $id, username: $data['username'] ?? null, password: $data['password'] ?? null, role: $data['role'] ?? null);
         } catch (\InvalidArgumentException $e) {
             return $this->response->setStatusCode(400)->setJSON(['error' => 'Invalid data']);
         }

@@ -19,7 +19,7 @@
             if (res.ok) {
                 const data = await res.json();
                 localStorage.setItem('token', data.token);
-                window.location.href = '/users-web';
+                window.location.href = '/list-users';
             } else {
                 alert('Login failed');
             }

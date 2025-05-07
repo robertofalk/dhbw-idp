@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\UserManager;
+use App\Models\User;
 
 class AuthController extends BaseController
 {
@@ -24,17 +25,20 @@ class AuthController extends BaseController
 
         if (!$data || !isset($data['username'], $data['password']))
             return $this->response->setStatusCode(400)->setJSON(['error' => 'Username and password required']);
- 
+
+        /** @var User $user */
+        $user = null;
+        
         try {
-            $users = $this->userManager->get($data);
+            $user = $this->userManager->get($data['username'], $data['password']);
         } catch (\RuntimeException $e) {
             return $this->response->setStatusCode(401)->setJSON(['error' => 'Invalid credentials']);
         }
         
         // Create a simple payload
         $payload = base64_encode(json_encode([
-            'username' => $users['username'],
-            'role' => $users['role'],
+            'username' => $user->getUsername(),
+            'role' => $user->getRole(),
             'iat' => time()
         ]));
 
